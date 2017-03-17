@@ -3,10 +3,10 @@ Added HomeKit support to my selfmade LED roomlamp using Raspberry, Arduino and E
 The lamp is dimmable, sends its status, can be turned on and off with a physical switch and can be controlled via a webbrowser.
 
 Special thanks to:
-*Nick Farina (nfarina) - Creator of Homebridge https://github.com/nfarina/homebridge
-*Adrian Rudman (rudders) - Creator of http-plugin https://github.com/rudders/homebridge-http
-*Jean-Claude Wippler (jcw) - Creator of the EtherCard Library https://github.com/jcw/ethercard
-*-->ME<--... i'm genious (pretty large ego) ;P
+* Nick Farina (nfarina) - Creator of Homebridge https://github.com/nfarina/homebridge
+* Adrian Rudman (rudders) - Creator of http-plugin https://github.com/rudders/homebridge-http
+* Jean-Claude Wippler (jcw) - Creator of the EtherCard Library https://github.com/jcw/ethercard
+* -->ME<--... i'm genious (pretty large ego) ;P
 
 
 ## Homebridge
