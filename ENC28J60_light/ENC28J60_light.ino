@@ -34,7 +34,8 @@ byte Ethernet::buffer[500]; //tcp/ip send and receive buffer
 BufferFiller bfill;
 
 //output pin o arduino
-int light;
+int light_ww;
+int light_cw;
 int d_input;
 
 //global
@@ -55,7 +56,8 @@ int phys; //handover variable
 
 void setup() {
   //set pins
-  light = 9;
+  light_ww = 9;
+  light_cw = 5;
   d_input = 8;
 
   //global
@@ -73,7 +75,8 @@ void setup() {
   phys = 0;
   
   Serial.begin(9600); //debugging settings
-  pinMode(light, OUTPUT); //define output pin
+  pinMode(light_ww, OUTPUT); //define output pin
+  pinMode(light_cw, OUTPUT);
   pinMode(d_input, INPUT_PULLUP);
   //pullup is required, because there is no reference value
   //(at a relais - is it possible connect it as an opener (NO instead of NC) and forget "_PULLUP"??)
@@ -94,7 +97,7 @@ void loop() {
       phys = 0; //return value if physical input is 1
     } else {phys = 1;}
   } else {phys = 3;} //this is needed to simulate single pulse
-  delay(brightness_delay);
+  delay(2*brightness_delay);
   io_before = io; //this is needed to simulate single pulse
 
   char* pos_buffer = (char *) Ethernet::buffer + pos;
@@ -143,12 +146,14 @@ int smooth_brightness(int current_state, int output, int on_off) {
   
   if (count_direction == 1) { 
     for (i_smooth; i_smooth <= output; i_smooth++) {
-      analogWrite(light, i_smooth);
+      analogWrite(light_ww, i_smooth);
+      analogWrite(light_cw, i_smooth);
       delay(brightness_delay);
     }
   } else {
     for (i_smooth; output <= i_smooth; i_smooth--) {
-      analogWrite(light, i_smooth);
+      analogWrite(light_ww, i_smooth);
+      analogWrite(light_cw, i_smooth);
       delay(brightness_delay);
     }
   }
