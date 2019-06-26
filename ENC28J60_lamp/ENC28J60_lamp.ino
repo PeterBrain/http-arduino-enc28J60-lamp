@@ -4,11 +4,11 @@
  * to Adrian Rudman (rudders) - Creator of http-plugin https://github.com/rudders/homebridge-http
  * to Jean-Claude Wippler (jcw) - Creator of the EtherCard Library https://github.com/jcw/ethercard
  * and to -->ME<--... i'm genious (pretty large ego) ;P
- * 
+ *
  * If anyone of you has got some superior skills and knows a more efficient way to code,
  * you are welcome to create an issue
- * 
- * 
+ *
+ *
  * Pin connection Diagramm for ENC28J60
  *  CS - Pin 10
  *  SI - Pin 11
@@ -16,11 +16,11 @@
  *  SCK - Pin 13
  *  GND - GND
  *  VCC - 3.3V
- * 
- * 
+ *
+ *
  * LED+ (with 270Ω Resistor) - Digital 9 //I didn't calculate the resistor value, but the led is still fine
  * LED- - GND
- * 
+ *
  * Physical switch - Digital 8
  */
 
@@ -50,7 +50,7 @@ int i_smooth; //counting value in for loop
 int brightness_delay; //delay between after one brightness step
 
 //physical
-int io_before; //this variable contains the previous 
+int io_before; //this variable contains the previous
 int io; //is the value of the external Input or physical Switch (digitalInput Pin)
 int phys; //handover variable
 
@@ -64,7 +64,7 @@ void setup() {
   out = 0;
   state = 0;
   state_before = 0;
-  
+
   //brightness
   i_smooth = 0;
   brightness_delay = 2; //in ms
@@ -73,7 +73,7 @@ void setup() {
   io_before = 0;
   io = 0;
   phys = 0;
-  
+
   Serial.begin(9600); //debugging settings
   pinMode(light_ww, OUTPUT); //define output pin
   pinMode(light_cw, OUTPUT);
@@ -106,14 +106,14 @@ void loop() {
   int io_status_cmp = strncmp("GET /io_status/", pos_buffer, 15); //compare header with snippet to detect if lamp is on or off
   int lvl_status_cmp = strncmp("GET /lvl_status/", pos_buffer, 16); //compare header with snippet to detect if there is a brightness set
   int lvl = strncmp("GET /lvl/", pos_buffer, 9); //compare header with snippet to detect if there is a brightness set - 0 is equal
-  
+
   if ((off != 0 || phys == 0) && state == 1) { //if conditions for switching off
     smooth_brightness(state, 0, 1);
     state = 0;
   }
-  
+
   else if (on != 0 || phys == 1 || lvl == 0) { //if conditions for switching on or change brightness
-    
+
     if (lvl == 0) {
       char* brightness_val = strtok(pos_buffer, "GET /lvl/"); //seperates percentage value from response
       out = atoi(brightness_val); //converts brightness value from char to integer
@@ -126,10 +126,10 @@ void loop() {
     smooth_brightness(state, out, 0);
     state = 1;
   }
-  
+
   if (pos) { //check if valid tcp data is received
     int out_lvl = (out/255)*100; //convert 0-255 range to 0-100 range
-    
+
     if (io_status_cmp == 0) {ether.httpServerReply(status_io_reply(state));} //status reply for on/off
     else if (lvl_status_cmp == 0) {ether.httpServerReply(status_lvl_reply(out_lvl));} //status reply for brightness level
     else {ether.httpServerReply(reply());} //send (web page data) reply, essential for homebridge
@@ -139,12 +139,12 @@ void loop() {
 //i didn't like the aggressive change of brightness... for loop at its finest
 int smooth_brightness(int current_state, int output, int on_off) {
   if (current_state == 0) {i_smooth = 0;} //set loop end condition to 0 to turn lamp off
-  
+
   //brightness up- or downwards
   if (i_smooth > output || on_off == 1) {count_direction = 0;}
   else if (i_smooth < output) {count_direction = 1;}
-  
-  if (count_direction == 1) { 
+
+  if (count_direction == 1) {
     for (i_smooth; i_smooth <= output; i_smooth++) {
       analogWrite(light_ww, i_smooth);
       analogWrite(light_cw, i_smooth);
@@ -157,7 +157,7 @@ int smooth_brightness(int current_state, int output, int on_off) {
       delay(brightness_delay);
     }
   }
-  
+
   output = i_smooth;
 }
 
